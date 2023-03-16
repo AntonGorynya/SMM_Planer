@@ -11,12 +11,22 @@
 ```
 CALLENAR_ID ='ИД вашего календаря'
 SPREADSHEET_ID='ИД вашей таблицы для планирования'
+VK_IMPLICIT_FLOW_TOKEN=<ваш токен>
+VK_GROUP_ID=<ID  группы куда будут выкладывать записи>
 ```
 
-Для получения ID из URL  можете воспользоваться встроенной функцией
+- Для получения ID google sheet из URL  можете воспользоваться встроенной функцией
 `get_id_from_url`
 
-Так же необходимо положить в основную директорию файл `credential.json`
+- Для получения токена для работы с VK  воспользуйтесь документацией которая находится по ссылке
+https://dev.vk.com/api/access-token/implicit-flow-user  
+так же можете перейти по ссылке указав соотвесвующий client_id
+VK_TEST_URL='https://oauth.vk.com/authorize?client_id={}&display=page&scope=photos,groups,wall,offline&response_type=token'
+
+- Для того что бы узнать VK ID  группы, в которой вы собираетесь постить фото вы можете воспользоваться сервисом 
+https://regvk.com/id/
+
+- Так же необходимо положить в основную директорию файл `credential.json`
 Вы можете его сгенерировать на странице https://console.cloud.google.com/apis/credential
 
 Python3 должен быть уже установлен. 
