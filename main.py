@@ -71,7 +71,7 @@ if __name__ == '__main__':
                           ok_gid,
                           image_token,
                           img_description,
-                          date_time
+                          date_time.strftime('%Y-%m-%d %H:%M')
                           )
                 write_cells(sheets_service, spreadsheet_id, f'List1!I{index+1}', ['TRUE'])
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=2, summary='OK')
@@ -79,7 +79,7 @@ if __name__ == '__main__':
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1, summary='OK exception')
             finally:
                 os.remove(img_name)
-             
+
 
 
 
