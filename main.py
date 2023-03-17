@@ -61,7 +61,8 @@ if __name__ == '__main__':
                 )
                 write_cells(sheets_service, spreadsheet_id, f'List1!G{index+1}', ['TRUE'])
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=2, summary='VK')
-            except:
+            except Exception as err:
+                print(f"Unexpected {err=}, {type(err)=}")
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1, summary='VK exception')
             finally:
                 os.remove(img_name)
@@ -84,7 +85,8 @@ if __name__ == '__main__':
                           )
                 write_cells(sheets_service, spreadsheet_id, f'List1!I{index+1}', ['TRUE'])
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=2, summary='OK')
-            except:
+            except Exception as err:
+                print(f"Unexpected {err=}, {type(err)=}")
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1, summary='OK exception')
             finally:
                 os.remove(img_name)
@@ -94,7 +96,7 @@ if __name__ == '__main__':
                 app.run(telegram_tools.post_photo(app, img_url, img_description, date_time, tg_cahannel))
                 write_cells(sheets_service, spreadsheet_id, f'List1!H{index + 1}', ['TRUE'])
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=2, summary='OK')
-            except:
+            except Exception as err:
+                print(f"Unexpected {err=}, {type(err)=}")
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1,
                           summary='TG exception')
-
