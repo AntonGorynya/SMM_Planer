@@ -4,10 +4,9 @@ import datetime
 import time
 import pandas as pd
 from googleapiclient.discovery import build
-from google_tools import get_credentials, get_sheet, write_cells, add_event, SCOPES
+from google_tools import get_credentials, get_sheet, write_cells, add_event, read_docs, get_id_from_url, SCOPES
 from common_function import get_file_extension, download_image
 from vk_tools import get_wall_upload_server, make_post, API_VERSION
-
 
 
 if __name__ == '__main__':
@@ -30,8 +29,9 @@ if __name__ == '__main__':
     for index, row in df.iterrows():
         if row['VK'] and not row['VK_published']:
             img_url = row['img_url']
+            doc_url = row['Text_description']
             img_name = f'test.{get_file_extension(img_url)}'
-            img_description = 'delayed'
+            img_description = read_docs(docs_service, get_id_from_url(doc_url))
             date_time = datetime.datetime.strptime(row['date'], '%Y-%m-%d %H:%M')
             unix_date = time.mktime(date_time.timetuple())
             download_image(img_url, img_name)
@@ -41,6 +41,8 @@ if __name__ == '__main__':
                           publish_date=unix_date)
                 write_cells(sheets_service, spreadsheet_id, f'List1!G{index+1}', ['TRUE'])
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=2, summary='VK')
+            except:
+                add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1, summary='VK exception')
             finally:
                 os.remove(img_name)
 
