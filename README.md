@@ -42,6 +42,8 @@ https://ok.ru/group/id , где вместо id - будет номер груп
 Вы можете его сгенерировать на странице https://console.cloud.google.com/apis/credential
 
 - Токен для Телеграм бота вы можете получить https://telegram.me/BotFather Чат ID можно узнать в свойствах канала.
+- 
+- API id и API HASH для  telegram  вы мможете получить по ссылке https://my.telegram.org/apps.
 
 Python3 должен быть уже установлен. 
 Затем используйте `pip` (или `pip3`, есть конфликт с Python2) для установки зависимостей:
