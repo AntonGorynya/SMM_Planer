@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from google_tools import get_credentials, get_sheet, write_cells, add_event, read_docs, get_id_from_url, SCOPES
 from common_function import get_file_extension, download_image
 from vk_tools import get_wall_upload_server, make_post, API_VERSION
-from ok_tools import get_upload_url, upload_image, make_post as ok_make_post
+from ok_tools import get_upload_url, upload_image, post_photo
 
 
 if __name__ == '__main__':
@@ -15,6 +15,7 @@ if __name__ == '__main__':
     env.read_env()
     vk_token = env('VK_IMPLICIT_FLOW_TOKEN')
     vk_group_id = env.int('VK_GROUP_ID')
+    vk_upload_url = get_wall_upload_server(vk_token, vk_group_id, API_VERSION)
     ok_session_key = env('OK_SESSION')
     ok_access_token = env('OK_ACCESS_TOKEN')
     ok_public_key = env('OK_PUBLIC_KEY')
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     df.columns = df.iloc[0]
     df = df[1:]
     for index, row in df.iterrows():
-        if row['VK'] and not row['VK_published']:
+        if not row['VK_published'] or not row['OK_published']:
             img_url = row['img_url']
             doc_url = row['Text_description']
             img_name = f'test.{get_file_extension(img_url)}'
@@ -40,9 +41,10 @@ if __name__ == '__main__':
             date_time = datetime.datetime.strptime(row['date'], '%Y-%m-%d %H:%M')
             unix_date = time.mktime(date_time.timetuple())
             download_image(img_url, img_name)
+
+        if row['VK'] and not row['VK_published']:
             try:
-                upload_url = get_wall_upload_server(vk_token, vk_group_id, API_VERSION)
-                make_post(img_name, img_description, upload_url, vk_token, vk_group_id, API_VERSION,
+                make_post(img_name, img_description, vk_upload_url, vk_token, vk_group_id, API_VERSION,
                           publish_date=unix_date)
                 write_cells(sheets_service, spreadsheet_id, f'List1!G{index+1}', ['TRUE'])
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=2, summary='VK')
@@ -52,12 +54,6 @@ if __name__ == '__main__':
                 os.remove(img_name)
 
         if row['OK'] and not row['OK_published']:
-            img_url = row['img_url']
-            doc_url = row['Text_description']
-            img_name = f'ImageOK.{get_file_extension(img_url)}'
-            img_description = read_docs(docs_service, get_id_from_url(doc_url))
-            date_time = datetime.datetime.strptime(row['date'], '%Y-%m-%d %H:%M')
-            download_image(img_url, img_name)
             try:
                 upload_url, photo_id = get_upload_url(ok_access_token,
                                                     ok_public_key,
@@ -67,7 +63,7 @@ if __name__ == '__main__':
                 uploaded_image = upload_image(upload_url, img_name)
                 image_token = uploaded_image['photos'][photo_id[0]]['token']
 
-                ok_make_post(ok_access_token, ok_public_key, ok_session_key,
+                post_photo(ok_access_token, ok_public_key, ok_session_key,
                           ok_gid,
                           image_token,
                           img_description,
@@ -79,9 +75,3 @@ if __name__ == '__main__':
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1, summary='OK exception')
             finally:
                 os.remove(img_name)
-
-
-
-
-
-

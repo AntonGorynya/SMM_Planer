@@ -70,7 +70,7 @@ def upload_image(url, image_path):
     return uploaded_image
 
 
-def make_post(access_token, public_key, session_key,
+def post_photo(access_token, public_key, session_key,
               group_id,
               image_token,
               post_text,
