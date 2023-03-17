@@ -60,7 +60,7 @@ def get_credentials(scopes):
 
 def get_sheet(service, spreadsheet_id, range_name):
     sheet = service.spreadsheets()
-    result = sheet.values.get(
+    result = sheet.values().get(
         spreadsheetId=spreadsheet_id,
         range=range_name).execute()
     values = result.get('values', [])
@@ -127,7 +127,8 @@ if __name__ == '__main__':
         # add_event(cal_service, callendar_id, '2023-03-16', color_id=2, summary='111')
 
         sheets_service = build('sheets', 'v4', credentials=credentials)
-        #values = get_sheet(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME)
+        values = get_sheet(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME)
+        print(values)
         #write_cells(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME2, ['TRUE'])
 
         docs_service = build('docs', 'v1', credentials=credentials)

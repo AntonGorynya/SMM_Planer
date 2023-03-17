@@ -10,6 +10,7 @@ from vk_tools import get_wall_upload_server, make_post, API_VERSION
 from ok_tools import get_upload_url, upload_image, make_post as ok_make_post
 
 
+
 if __name__ == '__main__':
     env = environs.Env()
     env.read_env()
@@ -79,7 +80,6 @@ if __name__ == '__main__':
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1, summary='OK exception')
             finally:
                 os.remove(img_name)
-
 
 
 
