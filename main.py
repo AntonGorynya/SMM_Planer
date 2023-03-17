@@ -79,7 +79,7 @@ if __name__ == '__main__':
                 add_event(cal_service, callendar_id, date_time.strftime('%Y-%m-%d'), color_id=1, summary='OK exception')
             finally:
                 os.remove(img_name)
-
+             
 
 
 
