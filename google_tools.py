@@ -34,7 +34,23 @@ def add_event(service, callendar_id, post_date, summary='', description='', colo
     }
 
     event = service.events().insert(calendarId=callendar_id, body=event).execute()
-    print('Event created: %s' % (event.get('htmlLink')))
+    return event['id']
+
+
+def get_events(service, callendar_id, date_from=None, date_to=None):
+    events = service.events().list(calendarId=callendar_id, timeMin=date_from, timeMax=date_to).execute()
+    return events['items']
+
+
+def update_event(service, callendar_id, event_id, summary, color_id=2):
+    event = service.events().get(calendarId=callendar_id, eventId=event_id).execute()
+    event['colorId'] = color_id
+    event['summary'] = summary
+    service.events().update(calendarId=callendar_id, eventId=event['id'], body=event).execute()
+
+
+def delete_event(service, callendar_id, event_id):
+    service.events().delete(calendarId=callendar_id, eventId=event_id).execute()
 
 
 def get_credentials(scopes):
@@ -121,18 +137,25 @@ if __name__ == '__main__':
     SAMPLE_RANGE_NAME = 'List1!A1:E'
     SAMPLE_RANGE_NAME2 = 'List1!I2'
     DISCOVERY_DOC = 'https://docs.google.com/document/d/1EIuGItBETsXkK6J5wJGJWko18pHmSiYDPwmWc5W-Scw/edit?usp=sharing'
-
+    cal_test = True
+    doc_test = False
+    sheet_test = False
     try:
-        cal_service = build('calendar', 'v3', credentials=credentials)
-        # add_event(cal_service, callendar_id, '2023-03-16', color_id=2, summary='111')
-
-        sheets_service = build('sheets', 'v4', credentials=credentials)
-        values = get_sheet(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME)
-        print(values)
-        #write_cells(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME2, ['TRUE'])
-
-        docs_service = build('docs', 'v1', credentials=credentials)
-        get_id_from_url(DISCOVERY_DOC)
-        #text = read_docs(docs_service, get_id_from_url(DISCOVERY_DOC))
+        if cal_test:
+            cal_service = build('calendar', 'v3', credentials=credentials)
+            #event_id = add_event(cal_service, callendar_id, '2023-03-16', color_id=2, summary='111')
+            events = get_events(cal_service, callendar_id,  date_from='2023-03-16T00:00:00Z', date_to='2023-03-16T23:00:00Z')
+            #update_event(cal_service, callendar_id, event_id, 'New', color_id=2)
+            #test = cal_service.events().get(calendarId=callendar_id).execute()
+            print(events)
+        if sheet_test:
+            sheets_service = build('sheets', 'v4', credentials=credentials)
+            values = get_sheet(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME)
+            print(values)
+            write_cells(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME2, ['TRUE'])
+        if doc_test:
+            docs_service = build('docs', 'v1', credentials=credentials)
+            get_id_from_url(DISCOVERY_DOC)
+            text = read_docs(docs_service, get_id_from_url(DISCOVERY_DOC))
     except HttpError as err:
         print(err)
