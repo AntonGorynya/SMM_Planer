@@ -21,12 +21,16 @@ def check_duplicate(service, cal_id, publish_date, social_type, exception_flag=N
         date_from=publish_date.replace(hour=0, minute=0),
         date_to=publish_date.replace(hour=23, minute=59)
     )
+    ex_event_name = f'{social_type} exception {publish_date}'
+    event_name = f'{social_type} {publish_date}'
     for event in events:
-        if event['summary'] == f'{social_type} exception {publish_date}' and exception_flag:
+        if event['summary'] == ex_event_name and exception_flag:
             update_event(service, cal_id, event['id'], f'{social_type} exception {publish_date}', color_id=1)
             return event
-        if event['summary'] == f'{social_type} exception {publish_date}':
+        if event['summary'] == ex_event_name:
             update_event(service, cal_id, event['id'], f'{social_type} {publish_date}', color_id=2)
+            return event
+        if event['summary'] == event_name:
             return event
     return None
 
