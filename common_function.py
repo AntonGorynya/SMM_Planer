@@ -16,6 +16,17 @@ def get_file_extension(url):
     return extension
 
 
+def format_text(text):
+    text = text.replace('-', '–')
+    formated_text = []
+    for word in text.split():
+        if word[0] == '\"' and word[-1] == '\"':
+            word = word.replace('\"', '«', 1)
+            word = word.replace('\"', '»', 1)
+        formated_text.append(word)
+    return ' '.join(formated_text)
+
+
 def get_colour(service):
     colors = service.colors().get().execute()
     print(colors)
@@ -29,3 +40,7 @@ def get_colour(service):
         print('colorId: %s' % id)
         print('  Background: %s' % color['background'])
         print('  Foreground: %s' % color['foreground'])
+
+
+if __name__ == '__main__':
+    pass

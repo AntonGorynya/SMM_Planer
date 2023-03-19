@@ -7,7 +7,7 @@ import telegram_tools
 from googleapiclient.discovery import build
 from google_tools import get_credentials, get_sheet, write_cells, add_event, read_docs, get_id_from_url, get_events,\
     update_event, SCOPES
-from common_function import get_file_extension, download_image
+from common_function import get_file_extension, download_image, format_text
 from vk_tools import get_wall_upload_server, make_post, API_VERSION
 from ok_tools import get_upload_url, upload_image, post_photo
 from pyrogram import Client
@@ -75,7 +75,7 @@ if __name__ == '__main__':
         img_url = row['img_url']
         doc_url = row['Text_description']
         img_name = f'test.{get_file_extension(img_url)}'
-        img_description = read_docs(docs_service, get_id_from_url(doc_url))
+        img_description = format_text(read_docs(docs_service, get_id_from_url(doc_url)))
         date_time = datetime.datetime.strptime(row['date'], '%Y-%m-%d %H:%M')
         unix_date = time.mktime(date_time.timetuple())
         download_image(img_url, img_name)
