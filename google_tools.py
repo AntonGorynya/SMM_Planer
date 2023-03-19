@@ -1,7 +1,6 @@
 import environs
 import os.path
-
-
+import datetime
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -26,9 +25,11 @@ def add_event(service, callendar_id, post_date, summary='', description='', colo
         'description': description,
         'start': {
             'date': post_date,
+            'timeZone': 'Europe/Moscow',
         },
         'end': {
             'date': post_date,
+            'timeZone': 'Europe/Moscow',
         },
         'colorId': color_id
     }
@@ -38,6 +39,12 @@ def add_event(service, callendar_id, post_date, summary='', description='', colo
 
 
 def get_events(service, callendar_id, date_from=None, date_to=None):
+    if date_from and date_to:
+        day_correction = datetime.timedelta(days=1)
+        date_from = date_from - day_correction
+        date_to = date_to - day_correction
+        date_from = date_from.strftime('%Y-%m-%dT%H:%M:%SZ')
+        date_to = date_to.strftime('%Y-%m-%dT%H:%M:%SZ')
     events = service.events().list(calendarId=callendar_id, timeMin=date_from, timeMax=date_to).execute()
     return events['items']
 
@@ -50,7 +57,7 @@ def update_event(service, callendar_id, event_id, summary, color_id=2):
 
 
 def delete_event(service, callendar_id, event_id):
-    service.events().delete(calendarId=callendar_id, eventId=event_id).execute()
+    service.events().delete(calendarId=callendar_id, eventId=event_id, timeZone='Europe/Moscow').execute()
 
 
 def get_credentials(scopes):
@@ -143,11 +150,9 @@ if __name__ == '__main__':
     try:
         if cal_test:
             cal_service = build('calendar', 'v3', credentials=credentials)
-            #event_id = add_event(cal_service, callendar_id, '2023-03-16', color_id=2, summary='111')
-            events = get_events(cal_service, callendar_id,  date_from='2023-03-16T00:00:00Z', date_to='2023-03-16T23:00:00Z')
-            #update_event(cal_service, callendar_id, event_id, 'New', color_id=2)
-            #test = cal_service.events().get(calendarId=callendar_id).execute()
-            print(events)
+            event_id = add_event(cal_service, callendar_id, '2023-03-16', color_id=2, summary='111')
+            update_event(cal_service, callendar_id, event_id, 'New', color_id=2)
+            test = cal_service.events().get(calendarId=callendar_id).execute()
         if sheet_test:
             sheets_service = build('sheets', 'v4', credentials=credentials)
             values = get_sheet(sheets_service, spreadsheet_id, SAMPLE_RANGE_NAME)
