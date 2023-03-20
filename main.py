@@ -25,10 +25,9 @@ def check_duplicate(service, cal_id, publish_date, social_type, exception_flag=N
     event_name = f'{social_type} {publish_date}'
     for event in events:
         if event['summary'] == ex_event_name and exception_flag:
-            update_event(service, cal_id, event['id'], f'{social_type} exception {publish_date}', color_id=1)
             return event
         if event['summary'] == ex_event_name:
-            update_event(service, cal_id, event['id'], f'{social_type} {publish_date}', color_id=2)
+            update_event(service, cal_id, event['id'], event_name, color_id=2)
             return event
         if event['summary'] == event_name:
             return event
@@ -37,6 +36,14 @@ def check_duplicate(service, cal_id, publish_date, social_type, exception_flag=N
 
 def add_event_to_smm_cal(cal_service, callendar_id, date_time, social_type, color_id=1, summary='',
                          exception_flag=None):
+    '''
+
+    Args:
+
+        social_type: in range ['VK', 'TG', 'OK']
+        exception_flag: exception occured, default - None
+
+    '''
     event = check_duplicate(cal_service, callendar_id, date_time, social_type, exception_flag=exception_flag)
     print(event)
     if event:
