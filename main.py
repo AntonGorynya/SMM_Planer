@@ -105,8 +105,7 @@ if __name__ == '__main__':
                     summary=f'VK exception {date_time}',
                     exception_flag=True
                 )
-            finally:
-                os.remove(img_name)
+
 
         if row['OK'] and not row['OK_published']:
             print('OK proccessing')
@@ -138,8 +137,7 @@ if __name__ == '__main__':
                     summary=f'OK exception {date_time}',
                     exception_flag=True
                 )
-            finally:
-                os.remove(img_name)
+
         if row['Telegram'] and not row['Telegram_published']:
             print('TG proccessing')
             try:
@@ -158,3 +156,4 @@ if __name__ == '__main__':
                     summary=f'TG exception {date_time}',
                     exception_flag=True
                 )
+        os.remove(img_name)
