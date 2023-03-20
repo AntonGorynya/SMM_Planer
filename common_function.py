@@ -27,20 +27,5 @@ def format_text(text):
     return ' '.join(formated_text)
 
 
-def get_colour(service):
-    colors = service.colors().get().execute()
-    print(colors)
-    # Print available calendarListEntry colors.
-    for id, color in colors['calendar'].items():
-        print('colorId: %s' % id)
-        print('  Background: %s' % color['background'])
-        print('  Foreground: %s' % color['foreground'])
-    # Print available event colors.
-    for id, color in colors['event'].item():
-        print('colorId: %s' % id)
-        print('  Background: %s' % color['background'])
-        print('  Foreground: %s' % color['foreground'])
-
-
 if __name__ == '__main__':
     pass
